@@ -14,37 +14,57 @@ interface Pokemon {
 
 const SIZE = 10;
 
-export function query(args: {
+export function filterByName(args: {
   after?: string;
   limit?: number;
-  q?: string;
+  name?: string;
 }): Connection<Pokemon> {
-  const { after, q, limit = SIZE } = args;
+  const { after, name, limit = SIZE } = args;
 
-  const filterByQ: (as: Pokemon[]) => Pokemon[] =
-    // filter only if q is defined
-    q === undefined
+  const filter: (as: Pokemon[]) => Pokemon[] =
+    name === undefined
       ? identity
-      : A.filter(p => p.name.toLowerCase().includes(q.toLowerCase()));
-
-  const sliceByAfter: (as: Pokemon[]) => Pokemon[] =
-    // filter only if q is defined
-    after === undefined
-      ? identity
-      : as =>
-          pipe(
-            as,
-            A.findIndex(a => a.id === after),
-            O.map(a => a + 1),
-            O.fold(() => as, idx => as.slice(idx))
-          );
+      : A.filter(p => p.name.toLowerCase().includes(name.toLowerCase()));
 
   const results: Pokemon[] = pipe(
     data,
-    filterByQ,
-    sliceByAfter,
+    filter,
+    sliceByAfter(after),
     // slicing limit + 1 because the `toConnection` function should known the connection size to determine if there are more results
     slice(0, limit + 1)
   );
   return toConnection(results, limit);
+}
+
+export function filterByType(args: {
+  after?: string;
+  limit?: number;
+  type?: string;
+}): Connection<Pokemon> {
+  const { after, type, limit = SIZE } = args;
+
+  const filter: (as: Pokemon[]) => Pokemon[] =
+    type === undefined
+      ? identity
+      : A.filter(p => p.types.some((t) => t === type));
+
+  const results: Pokemon[] = pipe(
+    data,
+    filter,
+    sliceByAfter(after),
+    slice(0, limit + 1)
+  );
+  return toConnection(results, limit);
+}
+
+function sliceByAfter(after?: string): (a: Pokemon[]) => Pokemon[] {
+  return after === undefined
+    ? identity
+    : as =>
+      pipe(
+        as,
+        A.findIndex(a => a.id === after),
+        O.map(a => a + 1),
+        O.fold(() => as, idx => as.slice(idx))
+      );
 }
