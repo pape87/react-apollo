@@ -17,14 +17,14 @@ const SIZE = 10;
 export function filterByName(args: {
   after?: string;
   limit?: number;
-  name?: string;
+  q?: string;
 }): Connection<Pokemon> {
-  const { after, name, limit = SIZE } = args;
+  const { after, q, limit = SIZE } = args;
 
   const filter: (as: Pokemon[]) => Pokemon[] =
-    name === undefined
+    q === undefined
       ? identity
-      : A.filter(p => p.name.toLowerCase().includes(name.toLowerCase()));
+      : A.filter(p => p.name.toLowerCase().includes(q?.toLowerCase()));
 
   const results: Pokemon[] = pipe(
     data,
@@ -39,14 +39,14 @@ export function filterByName(args: {
 export function filterByType(args: {
   after?: string;
   limit?: number;
-  type?: string;
+  q?: string;
 }): Connection<Pokemon> {
-  const { after, type, limit = SIZE } = args;
+  const { after, q, limit = SIZE } = args;
 
   const filter: (as: Pokemon[]) => Pokemon[] =
-    type === undefined
+    q === undefined
       ? identity
-      : A.filter(p => p.types.some((t) => t === type));
+      : A.filter(p => p.types.some((t) => t.includes(q)));
 
   const results: Pokemon[] = pipe(
     data,
