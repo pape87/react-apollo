@@ -7,9 +7,28 @@ export interface Pokemon {
 }
 
 export const GET_POKEMONS = gql`
-  query pokemons($name: String, $after: ID, $limit: Int)
+  query pokemons($q: String, $after: ID, $limit: Int)
   {
-    pokemons(name: $name, after: $after, limit: $limit) {
+    pokemons(q: $q, after: $after, limit: $limit) {
+      edges {
+        node {    
+          id,
+          name,    
+          types
+        }
+      },
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+    }
+  }
+`;
+
+export const GET_POKEMONS_BY_TYPE = gql`
+  query pokemonsByType($q: String, $after: ID, $limit: Int)
+  {
+    pokemonsByType(q: $q, after: $after, limit: $limit) {
       edges {
         node {    
           id,
