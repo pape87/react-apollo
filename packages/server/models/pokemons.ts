@@ -30,7 +30,6 @@ export function filterByName(args: {
     data,
     filter,
     sliceByAfter(after),
-    // slicing limit + 1 because the `toConnection` function should known the connection size to determine if there are more results
     slice(0, limit + 1)
   );
   return toConnection(results, limit);
@@ -46,7 +45,7 @@ export function filterByType(args: {
   const filter: (as: Pokemon[]) => Pokemon[] =
     q === undefined
       ? identity
-      : A.filter(p => p.types.some((t) => t.includes(q)));
+      : A.filter(p => p.types.some((t) => t.toLowerCase().includes(q.toLowerCase())));
 
   const results: Pokemon[] = pipe(
     data,
