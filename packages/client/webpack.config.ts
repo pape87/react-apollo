@@ -15,6 +15,7 @@ const webpackConfig = (env): Configuration => ({
     path: path.join(__dirname, "/dist"),
     filename: "build.js"
   },
+  devtool: "source-map",
   module: {
     rules: [
       {
