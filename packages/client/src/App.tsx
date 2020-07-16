@@ -1,11 +1,12 @@
 import React from "react";
-import SearchBox, { SearchData } from "./components/SearchBox/SearchBox";
 import { Layout } from "antd";
 
-
+import SearchBox, { SearchData } from "./components/SearchBox/SearchBox";
+import PokemonList from "./components/PokemonList/PokemonList";
 import "./App.css";
 
 const App: React.FC = () => {
+
 
   function onSearch(data: SearchData) {
 
@@ -14,6 +15,7 @@ const App: React.FC = () => {
   return (
     <Layout>
       <SearchBox onSearch={onSearch}></SearchBox>
+      <PokemonList></PokemonList>
     </Layout>);
 };
 
